@@ -1,7 +1,7 @@
 <h1 align="center">🌟 2048 - Jogo Clássico 🌟</h1>
 
 <p align="center">
-  <strong>Bem-vindo ao repositório do 2048</strong>, uma implementação do popular jogo 2048 desenvolvida com HTML, CSS e JavaScript. 🎮 Este projeto oferece uma experiência divertida e desafiadora, com animações suaves e funcionalidades interativas, ideal para jogadores casuais e entusiastas de quebra-cabeças.
+  <strong>Bem-vindo ao repositório 2048</strong>, uma implementação do popular jogo 2048 desenvolvida com HTML, CSS e JavaScript. 🎮 Este projeto oferece uma experiência divertida e desafiadora, com animações suaves e funcionalidades interativas, ideal para jogadores casuais e entusiastas de quebra-cabeças.
 </p>
 
 <p align="center">
@@ -74,7 +74,7 @@ Este projeto foi desenvolvido com apoio da Grok da xAI, refletindo um esforço p
 <h2 align="center">📸 Prévia do Design</h2>
 
 <p align="center">
-  <img src="preview-design-2048.png" alt="Design Responsivo do 2048" width="600">
+  <img src="./src/img/jogo.png" alt="Jogo 2048" width="600">
 </p>
 
 ---
@@ -84,8 +84,7 @@ Este projeto foi desenvolvido com apoio da Grok da xAI, refletindo um esforço p
 Conheça os responsáveis por este projeto!
 
 <ul>
-  <li><strong>[Seu Nome]</strong> - Desenvolvedor Principal (substitua por seu nome ou equipe)</li>
-  <li><a href="https://x.ai"><strong>xAI Grok</strong></a> - Assistência na criação e otimização</li>
+  <li><strong>Yan Fellippe</strong> - Desenvolvedor Fullstack</li>
 </ul>
 
 ---
@@ -106,13 +105,13 @@ Quer ajudar a melhorar o **2048**? Siga os passos abaixo!
 
 Tem dúvidas, sugestões ou feedback? Entre em contato!
 
-- 📩 **Email**: [seu-email@example.com](mailto:seu-email@example.com) (substitua pelo seu email)
+- 📩 **Email**: [yangomesbasilio@gmail.com](mailto:yangomesbasilio@gmail.com)
 
 ---
 
 <h2 align="center">ℹ️ Sobre</h2>
 
-O **2048** foi desenvolvido como um projeto pessoal com assistência da Grok da xAI, destacando a aplicação de tecnologias web para criar jogos interativos. Este projeto reflete o potencial de soluções simples e acessíveis para entretenimento, sendo uma ótima demonstração de habilidades em desenvolvimento front-end.
+O **2048** foi desenvolvido como um projeto pessoal. Este projeto reflete o potencial de soluções simples e acessíveis para entretenimento, sendo uma ótima demonstração de habilidades em desenvolvimento front-end.
 
 ---
 
