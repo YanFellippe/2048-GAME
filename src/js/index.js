@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 previousStates: [],
                 undoCount: 5,
                 gameOver: false,
-                won: false
+                won: false,
+                lastMove: null // Track last move direction
             };
             
             this.setup();
@@ -113,7 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 previousStates: [],
                 undoCount: 5,
                 gameOver: false,
-                won: false
+                won: false,
+                lastMove: null
             };
             
             this.updateScore();
@@ -122,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.gameMessage.classList.add('hidden');
             
             // Add 2 initial tiles
-            this.addRandomTile();
-            this.addRandomTile();
+            this.addRandomTile(true);
+            this.addRandomTile(true);
             
             this.saveState();
         }
@@ -138,7 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 score: this.state.score,
                 undoCount: this.state.undoCount,
                 gameOver: this.state.gameOver,
-                won: this.state.won
+                won: this.state.won,
+                lastMove: this.state.lastMove
             });
         }
         
@@ -152,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.state.undoCount = previousState.undoCount - 1;
             this.state.gameOver = previousState.gameOver;
             this.state.won = previousState.won;
+            this.state.lastMove = previousState.lastMove;
             
             this.updateScore();
             this.updateUndoButton();
@@ -170,19 +174,23 @@ document.addEventListener('DOMContentLoaded', () => {
         moveTiles(direction) {
             if (this.state.gameOver) return;
             
+            // Store the direction for animation
+            this.state.lastMove = direction;
+            
             // Create a copy of the current grid to compare later
             const gridBeforeMove = [...this.state.grid];
             let moved = false;
             let scoreIncrease = 0;
+            const mergedPositions = new Set();
             
             // Process the grid based on direction
             for (let i = 0; i < GRID_SIZE; i++) {
                 const rowOrColumn = this.getRowOrColumn(i, direction);
-                const { tiles, mergedScore } = this.slideTiles(rowOrColumn, direction);
+                const { tiles, mergedScore, merges } = this.slideTiles(rowOrColumn, direction, i);
                 scoreIncrease += mergedScore;
                 
                 // Update the grid with the new tiles
-                this.updateGridWithRowOrColumn(i, tiles, direction);
+                this.updateGridWithRowOrColumn(i, tiles, direction, merges, mergedPositions);
                 
                 // Check if any tile moved
                 if (!moved && !this.areEqual(rowOrColumn, tiles)) {
@@ -199,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 this.updateScore();
-                this.addRandomTile();
+                this.addRandomTile(true);
                 this.saveState();
                 this.state.undoCount = 5;
                 this.updateUndoButton();
@@ -247,10 +255,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return rowOrColumn;
         }
         
-        slideTiles(tiles, direction) {
+        slideTiles(tiles, direction, rowOrColIndex) {
             const nonZeroTiles = tiles.filter(tile => tile !== 0);
             const newTiles = [];
             let mergedScore = 0;
+            const merges = [];
             let skipNext = false;
             
             for (let i = 0; i < nonZeroTiles.length; i++) {
@@ -263,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const mergedValue = nonZeroTiles[i] * 2;
                     newTiles.push(mergedValue);
                     mergedScore += mergedValue;
+                    merges.push({ position: newTiles.length - 1, rowOrColIndex, direction });
                     skipNext = true;
                 } else {
                     newTiles.push(nonZeroTiles[i]);
@@ -274,10 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 newTiles.push(0);
             }
             
-            return { tiles: newTiles, mergedScore };
+            return { tiles: newTiles, mergedScore, merges };
         }
         
-        updateGridWithRowOrColumn(index, tiles, direction) {
+        updateGridWithRowOrColumn(index, tiles, direction, merges, mergedPositions) {
             for (let i = 0; i < GRID_SIZE; i++) {
                 let cellIndex;
                 
@@ -296,6 +306,28 @@ document.addEventListener('DOMContentLoaded', () => {
                         break;
                 }
                 
+                // Mark merged positions
+                merges.forEach(merge => {
+                    let mergeIndex;
+                    switch (direction) {
+                        case 'up':
+                            mergeIndex = merge.position * GRID_SIZE + merge.rowOrColIndex;
+                            break;
+                        case 'down':
+                            mergeIndex = (GRID_SIZE - 1 - merge.position) * GRID_SIZE + merge.rowOrColIndex;
+                            break;
+                        case 'left':
+                            mergeIndex = merge.rowOrColIndex * GRID_SIZE + merge.position;
+                            break;
+                        case 'right':
+                            mergeIndex = merge.rowOrColIndex * GRID_SIZE + (GRID_SIZE - 1 - merge.position);
+                            break;
+                    }
+                    if (cellIndex === mergeIndex) {
+                        mergedPositions.add(cellIndex);
+                    }
+                });
+                
                 this.state.grid[cellIndex] = tiles[i];
             }
         }
@@ -310,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         }
         
-        addRandomTile() {
+        addRandomTile(isNew = false) {
             const emptyCells = this.state.grid
                 .map((value, index) => ({ value, index }))
                 .filter(cell => cell.value === 0);
@@ -319,17 +351,23 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             this.state.grid[randomCell.index] = Math.random() < 0.9 ? 2 : 4;
+            
+            if (isNew) {
+                this.state.grid[randomCell.index] = { value: this.state.grid[randomCell.index], isNew: true };
+            }
         }
         
         isGameOver() {
             // Check if there are empty cells
-            if (this.state.grid.some(cell => cell === 0)) return false;
+            if (this.state.grid.some(cell => cell === 0 || (typeof cell === 'object' && cell.value === 0))) return false;
             
             // Check for possible merges in rows
             for (let y = 0; y < GRID_SIZE; y++) {
                 for (let x = 0; x < GRID_SIZE - 1; x++) {
                     const index = y * GRID_SIZE + x;
-                    if (this.state.grid[index] === this.state.grid[index + 1]) {
+                    const value1 = typeof this.state.grid[index] === 'object' ? this.state.grid[index].value : this.state.grid[index];
+                    const value2 = typeof this.state.grid[index + 1] === 'object' ? this.state.grid[index + 1].value : this.state.grid[index + 1];
+                    if (value1 === value2) {
                         return false;
                     }
                 }
@@ -339,7 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let x = 0; x < GRID_SIZE; x++) {
                 for (let y = 0; y < GRID_SIZE - 1; y++) {
                     const index = y * GRID_SIZE + x;
-                    if (this.state.grid[index] === this.state.grid[index + GRID_SIZE]) {
+                    const value1 = typeof this.state.grid[index] === 'object' ? this.state.grid[index].value : this.state.grid[index];
+                    const value2 = typeof this.state.grid[index + GRID_SIZE] === 'object' ? this.state.grid[index + GRID_SIZE].value : this.state.grid[index + GRID_SIZE];
+                    if (value1 === value2) {
                         return false;
                     }
                 }
@@ -350,8 +390,30 @@ document.addEventListener('DOMContentLoaded', () => {
         
         renderTiles() {
             this.clearTiles();
+            const mergedPositions = new Set();
             
-            this.state.grid.forEach((value, index) => {
+            // Track previous positions for movement animation
+            const previousTiles = new Map();
+            if (this.state.lastMove) {
+                const previousState = this.state.previousStates[this.state.previousStates.length - 1];
+                if (previousState) {
+                    previousState.grid.forEach((value, index) => {
+                        if (value !== 0) {
+                            previousTiles.set(index, { value, x: index % GRID_SIZE, y: Math.floor(index / GRID_SIZE) });
+                        }
+                    });
+                }
+            }
+            
+            this.state.grid.forEach((cell, index) => {
+                let value = cell;
+                let isNew = false;
+                
+                if (typeof cell === 'object') {
+                    value = cell.value;
+                    isNew = cell.isNew || false;
+                }
+                
                 if (value === 0) return;
                 
                 const x = index % GRID_SIZE;
@@ -365,15 +427,77 @@ document.addEventListener('DOMContentLoaded', () => {
                     tile.classList.add('tile-super');
                 }
                 
+                if (isNew) {
+                    tile.classList.add('tile-new');
+                }
+                
+                // Check if this tile was merged
+                const isMerged = this.state.previousStates.length > 0 && this.state.lastMove &&
+                    this.wasMerged(index, value, this.state.previousStates[this.state.previousStates.length - 1].grid);
+                
+                if (isMerged && !mergedPositions.has(index)) {
+                    tile.classList.add('tile-merged');
+                    mergedPositions.add(index);
+                }
+                
                 tile.textContent = value;
                 
-                tile.style.width = `calc((100% - ${CELL_GAP * (GRID_SIZE - 1)}px) / ${GRID_SIZE})`;
-                tile.style.height = `calc((100% - ${CELL_GAP * (GRID_SIZE - 1)}px) / ${GRID_SIZE})`;
-                tile.style.left = `calc(${x} * (100% / ${GRID_SIZE}) + ${x} * ${CELL_GAP}px)`;
-                tile.style.top = `calc(${y} * (100% / ${GRID_SIZE}) + ${y} * ${CELL_GAP}px)`;
+                // Use grid positioning
+                tile.style.gridColumn = x + 1;
+                tile.style.gridRow = y + 1;
                 
                 this.tileContainer.appendChild(tile);
+                
+                // Reset isNew flag after rendering
+                if (isNew) {
+                    this.state.grid[index] = value;
+                }
             });
+        }
+        
+        wasMerged(currentIndex, currentValue, previousGrid) {
+            // Simplified merge detection: check if the tile's value couldn't have come from a single tile in the previous state
+            const prevValue = previousGrid[currentIndex];
+            if (prevValue === currentValue) return false; // No merge if value unchanged
+            
+            // Check if this position could be the result of a merge
+            const x = currentIndex % GRID_SIZE;
+            const y = Math.floor(currentIndex / GRID_SIZE);
+            
+            const halfValue = currentValue / 2;
+            let possibleSources = 0;
+            
+            // Check adjacent positions in the direction of the last move
+            if (this.state.lastMove) {
+                switch (this.state.lastMove) {
+                    case 'up':
+                        if (y < GRID_SIZE - 1) {
+                            if (previousGrid[currentIndex + GRID_SIZE] === halfValue) possibleSources++;
+                            if (y < GRID_SIZE - 2 && previousGrid[currentIndex + 2 * GRID_SIZE] === halfValue) possibleSources++;
+                        }
+                        break;
+                    case 'down':
+                        if (y > 0) {
+                            if (previousGrid[currentIndex - GRID_SIZE] === halfValue) possibleSources++;
+                            if (y > 1 && previousGrid[currentIndex - 2 * GRID_SIZE] === halfValue) possibleSources++;
+                        }
+                        break;
+                    case 'left':
+                        if (x < GRID_SIZE - 1) {
+                            if (previousGrid[currentIndex + 1] === halfValue) possibleSources++;
+                            if (x < GRID_SIZE - 2 && previousGrid[currentIndex + 2] === halfValue) possibleSources++;
+                        }
+                        break;
+                    case 'right':
+                        if (x > 0) {
+                            if (previousGrid[currentIndex - 1] === halfValue) possibleSources++;
+                            if (x > 1 && previousGrid[currentIndex - 2] === halfValue) possibleSources++;
+                        }
+                        break;
+                }
+            }
+            
+            return possibleSources >= 2;
         }
         
         clearTiles() {
