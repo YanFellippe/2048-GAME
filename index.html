@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 Game</title>
+    <link rel="stylesheet" href="src/style/index.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>2048</h1>
+            <div class="scores">
+                <div class="score-box">
+                    <div class="score-label">SCORE</div>
+                    <div class="score-value" id="score">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">BEST</div>
+                    <div class="score-value" id="best-score">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-controls">
+            <button id="undo-btn" class="control-btn" disabled>Desfazer (5)</button>
+            <button id="new-game-btn" class="control-btn">Novo Jogo</button>
+        </div>
+        
+        <div class="game-message hidden" id="game-message">
+            <p></p>
+            <button class="continue-btn">Continuar</button>
+        </div>
+        
+        <div class="grid-container">
+            <div class="grid-background">
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+                <div class="grid-cell"></div>
+            </div>
+            <div class="tile-container" id="tile-container"></div>
+        </div>
+        
+        <div class="game-instructions">
+            <p><strong>Como jogar:</strong> Use as teclas de seta para mover os blocos. Quando dois blocos iguais se tocam, eles se fundem em um!</p>
+        </div>
+    </div>
+    
+    <script src="src/js/index.js"></script>
+</body>
+</html>
