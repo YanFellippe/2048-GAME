@@ -1,3 +1,28 @@
+# Jogo 2048
+
+Uma implementação do clássico jogo 2048 construída com HTML, CSS e JavaScript. O objetivo é deslizar os blocos numerados em uma grade 4x4 para combiná-los, buscando criar um bloco com o valor de 2048. Este projeto inclui animações suaves para movimentos e fusões de blocos, além de recursos como a opção de desfazer movimentos e controles por toque em dispositivos móveis.
+
+## Funcionalidades
+- Animações suaves para movimentos e fusões de blocos.
+- Opção de desfazer movimentos (até 5 vezes por jogo).
+- Rastreamento de pontuação com a melhor pontuação salva no armazenamento local.
+- Design responsivo para desktops e dispositivos móveis.
+- Suporte a toque para jogabilidade em dispositivos móveis.
+- Opções de novo jogo e continuar.
+
+## Pré-requisitos
+- Um navegador web moderno (Chrome, Firefox, Safari, etc.).
+- Nenhum software ou dependência adicional necessária.
+
+## Instalação
+1. Clone o repositório ou baixe os arquivos:
+
+git clone <url-do-repositório>
+
+2. Navegue até a pasta do projeto:
+
+cd 2048-jogo
+
 3. Abra o arquivo `index.html` em um navegador web para começar a jogar.
 
 ## Uso
