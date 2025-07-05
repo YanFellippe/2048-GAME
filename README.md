@@ -9,9 +9,9 @@
 </p>
 <div align="center">
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/[seu-usuario]/[seu-repositorio]?style=flat-square)](https://github.com/YanFellippe/2048-GAME)
-[![GitHub repo size](https://img.shields.io/github/repo-size/[seu-usuario]/[seu-repositorio]?style=flat-square)](https://github.com/YanFellippe/2048-GAME)
-[![GitHub issues](https://img.shields.io/github/issues/[seu-usuario]/[seu-repositorio]?style=flat-square)](https://github.com/YanFellippe/2048-GAME)
+[![GitHub last commit](https://img.shields.io/github/last-commit/YanFellippe/2048-GAME?style=flat-square)](https://github.com/YanFellippe/2048-GAME)
+[![GitHub repo size](https://img.shields.io/github/repo-size/YanFellippe/2048-GAME?style=flat-square)](https://github.com/YanFellippe/2048-GAME)
+[![GitHub issues](https://img.shields.io/github/issues/YanFellippe/2048-GAME?style=flat-square)](https://github.com/YanFellippe/2048-GAME)
 
 </div>
 
