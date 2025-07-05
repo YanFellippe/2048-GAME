@@ -50,14 +50,6 @@ Este projeto foi desenvolvido com apoio da Grok da xAI, refletindo um esforço p
 
 ---
 
-<h2 align="center">📸 Prévia da Plataforma</h2>
-
-<p align="center">
-  <img src="preview-2048.png" alt="Interface Principal do 2048" width="600">
-</p>
-
----
-
 <h2 align="center">💻 Tecnologias Utilizadas</h2>
 
 <p align="center">
