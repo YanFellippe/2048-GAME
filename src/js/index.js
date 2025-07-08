@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const GRID_SIZE = 4;
-    const CELL_SIZE = 25; // 25% of container width
+    const CELL_SIZE = 25; // 25% da largura do container
     const CELL_GAP = 15;
     
     class Game {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 undoCount: 5,
                 gameOver: false,
                 won: false,
-                lastMove: null // Track last move direction
+                lastMove: null // Acompanhe a direção do último movimento
             };
             
             this.setup();
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         setup() {
-            // Position grid cells
+            // Posicionar células da grade
             this.cells.forEach((cell, index) => {
                 const x = index % GRID_SIZE;
                 const y = Math.floor(index / GRID_SIZE);
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.gameMessage.classList.add('hidden');
             });
             
-            // Touch events for mobile
+            // Eventos de toque para celular
             let touchStartX = 0;
             let touchStartY = 0;
             let touchEndX = 0;
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         handleKeyDown(e) {
             const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
             if (keys.includes(e.key)) {
-                e.preventDefault(); // ⛔ impede o scroll
+                e.preventDefault(); // Impede o scroll
             }
             if (this.state.gameOver) return;
             switch (e.key) {
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             
             this.updateScore();
-            this.updateUndoButton(); // ✅ usar função centralizada
+            this.updateUndoButton(); // Usar função centralizada
             this.gameMessage.classList.add('hidden');
             
             // Add 2 initial tiles
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.state.gameOver = previousState.gameOver;
             this.state.won = previousState.won;
             this.state.lastMove = previousState.lastMove;
-            this.state.undoCount--; // ✅ decrementa aqui
+            this.state.undoCount--; // diminui contagem de reverter movimento
 
             this.updateScore();
             this.updateUndoButton();
@@ -176,31 +176,31 @@ document.addEventListener('DOMContentLoaded', () => {
         moveTiles(direction) {
             if (this.state.gameOver) return;
             
-            // Store the direction for animation
+            // Armazene a direção para animação
             this.state.lastMove = direction;
             
-            // Create a copy of the current grid to compare later
+            // Crie uma cópia da grade atual para comparar mais tarde (botão refazer)
             const gridBeforeMove = [...this.state.grid];
             let moved = false;
             let scoreIncrease = 0;
             const mergedPositions = new Set();
             
-            // Process the grid based on direction
+            // Processar a grade com base na direção
             for (let i = 0; i < GRID_SIZE; i++) {
                 const rowOrColumn = this.getRowOrColumn(i, direction);
                 const { tiles, mergedScore, merges } = this.slideTiles(rowOrColumn, direction, i);
                 scoreIncrease += mergedScore;
                 
-                // Update the grid with the new tiles
+                // Atualize o jogo com os novos blocos
                 this.updateGridWithRowOrColumn(i, tiles, direction, merges, mergedPositions);
                 
-                // Check if any tile moved
+                // Verifique se alguma peça se moveu
                 if (!moved && !this.areEqual(rowOrColumn, tiles)) {
                     moved = true;
                 }
             }
             
-            // If tiles moved, add a new random tile and save state
+            // Se as peças forem movidas, adicione uma nova peça aleatória e salve o estado
             if (moved) {
                 this.state.score += scoreIncrease;
                 if (this.state.score > this.state.bestScore) {
@@ -213,13 +213,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.saveState();
                 this.updateUndoButton();
                 
-                // Check for win condition
+                // Verifique a condição de vitória
                 if (!this.state.won && this.state.grid.some(cell => cell === 2048)) {
                     this.state.won = true;
                     this.showMessage('Você venceu!');
                 }
                 
-                // Check for game over
+                // Verifique se o jogo acabou
                 if (this.isGameOver()) {
                     this.state.gameOver = true;
                     this.showMessage('Fim de jogo!');
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Fill the rest with zeros
+            // Preencha o restante com zeros
             while (newTiles.length < GRID_SIZE) {
                 newTiles.push(0);
             }
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         break;
                 }
                 
-                // Mark merged positions
+                // Marcar posições mescladas
                 merges.forEach(merge => {
                     let mergeIndex;
                     switch (direction) {
@@ -359,10 +359,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         isGameOver() {
-            // Check if there are empty cells
+            // Verifique se há células vazias
             if (this.state.grid.some(cell => cell === 0 || (typeof cell === 'object' && cell.value === 0))) return false;
             
-            // Check for possible merges in rows
+            // Verifique possíveis fusões em linhas
             for (let y = 0; y < GRID_SIZE; y++) {
                 for (let x = 0; x < GRID_SIZE - 1; x++) {
                     const index = y * GRID_SIZE + x;
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            // Check for possible merges in columns
+            // Verifique possíveis fusões em colunas
             for (let x = 0; x < GRID_SIZE; x++) {
                 for (let y = 0; y < GRID_SIZE - 1; y++) {
                     const index = y * GRID_SIZE + x;
@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.clearTiles();
             const mergedPositions = new Set();
             
-            // Track previous positions for movement animation
+            // Rastrear posições anteriores para animação de movimento
             const previousTiles = new Map();
             if (this.state.lastMove) {
                 const previousState = this.state.previousStates[this.state.previousStates.length - 1];
@@ -432,24 +432,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     tile.classList.add('tile-new');
                 }
                 
-                // Check if this tile was merged
+                // Verifique se este bloco foi mesclado
                 const isMerged = this.state.previousStates.length > 0 && this.state.lastMove &&
                     this.wasMerged(index, value, this.state.previousStates[this.state.previousStates.length - 1].grid);
                 
                 if (isMerged && !mergedPositions.has(index)) {
+                    // Força reflow e reaplica a classe para garantir animação
                     tile.classList.add('tile-merged');
+                    tile.addEventListener('animationend', () => {
+                        tile.classList.remove('tile-merged');
+                    }, { once: true });
+
                     mergedPositions.add(index);
                 }
-                
+                                
                 tile.textContent = value;
                 
-                // Use grid positioning
+                // Usar posicionamento de grade
                 tile.style.gridColumn = x + 1;
                 tile.style.gridRow = y + 1;
                 
                 this.tileContainer.appendChild(tile);
                 
-                // Reset isNew flag after rendering
+                // Redefinir o sinalizador isNew após a renderização
                 if (isNew) {
                     this.state.grid[index] = value;
                 }
@@ -457,18 +462,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         wasMerged(currentIndex, currentValue, previousGrid) {
-            // Simplified merge detection: check if the tile's value couldn't have come from a single tile in the previous state
+            // Detecção de mesclagem simplificada: verifique se o valor do bloco não pode ter vindo de um único bloco no estado anterior
             const prevValue = previousGrid[currentIndex];
             if (prevValue === currentValue) return false; // No merge if value unchanged
             
-            // Check if this position could be the result of a merge
+            // Verifique se esta posição pode ser resultado de uma fusão
             const x = currentIndex % GRID_SIZE;
             const y = Math.floor(currentIndex / GRID_SIZE);
             
             const halfValue = currentValue / 2;
             let possibleSources = 0;
             
-            // Check adjacent positions in the direction of the last move
+            // Verifique as posições adjacentes na direção do último movimento
             if (this.state.lastMove) {
                 switch (this.state.lastMove) {
                     case 'up':
@@ -517,7 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.gameMessage.classList.remove('hidden');
         }
     }
-    
-    // Initialize the game
+    // Inicia um jogo novo
     new Game();
 });

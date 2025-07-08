@@ -90,7 +90,7 @@ body {
     border-radius: 6px;
     padding: 15px;
     margin-bottom: 20px;
-    overflow: hidden; /* Prevent overflow */
+    overflow: hidden; /* tira o overflow */
 }
 
 .grid-background {
@@ -100,7 +100,7 @@ body {
     gap: 15px;
     width: 100%;
     height: 0;
-    padding-bottom: 100%; /* Maintains square aspect ratio */
+    padding-bottom: 100%; /* mantem o aspecto de quadrado com radius */
     position: relative;
     box-sizing: content-box;
 }
@@ -244,6 +244,27 @@ body {
         transform: scale(1);
         box-shadow: none;
     }
+}
+
+/* briho ao transformar */
+@keyframes flash-pop {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0.5);
+    }
+}
+
+.tile-merged {
+    animation: flash-pop 0.3s ease;
+    z-index: 20;
 }
 
 .game-message {
