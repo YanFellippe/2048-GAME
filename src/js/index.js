@@ -127,8 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             
             this.updateScore();
-            this.undoBtn.disabled = true;
-            this.undoBtn.textContent = `Desfazer (${this.state.undoCount})`;
+            this.updateUndoButton(); // ✅ usar função centralizada
             this.gameMessage.classList.add('hidden');
             
             // Add 2 initial tiles
@@ -142,38 +141,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.state.previousStates.length >= 5) {
                 this.state.previousStates.shift();
             }
-            
+
             this.state.previousStates.push({
                 grid: [...this.state.grid],
                 score: this.state.score,
-                undoCount: this.state.undoCount,
                 gameOver: this.state.gameOver,
                 won: this.state.won,
                 lastMove: this.state.lastMove
             });
-        }
-        
+        }        
+
         undoMove() {
             if (this.state.previousStates.length === 0 || this.state.undoCount <= 0) return;
-            
+
             const previousState = this.state.previousStates.pop();
-            
-            this.state.grid = previousState.grid;
+
+            this.state.grid = [...previousState.grid];
             this.state.score = previousState.score;
-            this.state.undoCount = previousState.undoCount - 1;
             this.state.gameOver = previousState.gameOver;
             this.state.won = previousState.won;
             this.state.lastMove = previousState.lastMove;
-            
+            this.state.undoCount--; // ✅ decrementa aqui
+
             this.updateScore();
             this.updateUndoButton();
             this.renderTiles();
-            
-            if (this.state.undoCount <= 0) {
-                this.undoBtn.disabled = true;
-            }
         }
-        
+
         updateUndoButton() {
             this.undoBtn.textContent = `Desfazer (${this.state.undoCount})`;
             this.undoBtn.disabled = this.state.undoCount <= 0;
@@ -217,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.updateScore();
                 this.addRandomTile(true);
                 this.saveState();
-                this.state.undoCount = 5;
                 this.updateUndoButton();
                 
                 // Check for win condition
