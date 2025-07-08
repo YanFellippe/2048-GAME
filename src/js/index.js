@@ -15,7 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.gameMessage = document.getElementById('game-message');
             this.messageText = this.gameMessage.querySelector('p');
             this.continueBtn = this.gameMessage.querySelector('.continue-btn');
-            
+            // Touch no celular
+            this.touchStartX = 0;
+            this.touchStartY = 0;
+            this.touchEndX = 0;
+            this.touchEndY = 0;
+                        
             this.state = {
                 score: 0,
                 bestScore: localStorage.getItem('bestScore') || 0,
@@ -61,13 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let touchEndY = 0;
             
             document.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                touchStartY = e.changedTouches[0].screenY;
+                this.touchStartX = e.changedTouches[0].screenX;
+                this.touchStartY = e.changedTouches[0].screenY;
             }, false);
-            
+
             document.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                touchEndY = e.changedTouches[0].screenY;
+                this.touchEndX = e.changedTouches[0].screenX;
+                this.touchEndY = e.changedTouches[0].screenY;
                 this.handleSwipe();
             }, false);
         }
@@ -86,8 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         handleKeyDown(e) {
+            const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            if (keys.includes(e.key)) {
+                e.preventDefault(); // ⛔ impede o scroll
+            }
             if (this.state.gameOver) return;
-            
             switch (e.key) {
                 case 'ArrowUp':
                     this.moveTiles('up');
