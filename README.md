@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://shields.io"><img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-blue?style=flat-square" alt="Status: Em Desenvolvimento"></a>
+  <a href="https://shields.io"><img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-green?style=flat-square" alt="Status: Concluído"></a>
 </p>
 <div align="center">
 
